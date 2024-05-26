@@ -22,7 +22,14 @@
           "CREATE STORE tasks WITH KEY autoIncrement",
           "CREATE STORE another WITH KEY id"
         ]
-      }]
+      },
+        {
+          version: 2,
+          name: "RemoveStoreTasks",
+          instructions: [
+            "REMOVE STORE tasks",
+          ]
+        }]
     }).then(db => {
       if (!!db._db) {
         const status = document.getElementById("status");

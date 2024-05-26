@@ -1,4 +1,4 @@
-import Transaction from "./transaction";
+import Store from "./store";
 
 import type UpgradeDatabase from "./upgradeDatabase";
 import type DatabaseConfiguration from "./configuration";
@@ -82,21 +82,13 @@ export default class Database {
     });
   }
 
-  async openTransaction<T extends "readonly" | "readwrite", U>(
-    store: string,
-    mode: T,
-    fn: (t: Transaction<T>) => Promise<U>
-  ): Promise<U> {
+  async openStore(storeName: string) {
     const db = await this.open();
-    const transaction = new Transaction<T>(db, store, mode);
 
-    try {
-      return await fn(transaction);
-    } catch (e) {
-      transaction.rollback();
-      throw e;
-    } finally {
-      await transaction.commit();
+    if (!db.objectStoreNames.contains(storeName)) {
+      throw new Error(`Store ${storeName} does not exist`);
     }
+
+    return new Store(db, storeName);
   }
 }
