@@ -5,7 +5,7 @@ export default abstract class BaseInstruction<T> {
     this._data = data;
   }
 
-  static parse(instruction: string): BaseInstruction<T> | null {
+  static parse(instruction: string): BaseInstruction<any> | null {
     throw new Error("parse method not implemented");
   }
 

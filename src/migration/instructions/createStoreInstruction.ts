@@ -6,7 +6,7 @@ interface CreateStoreInstructionData {
 }
 
 export default class CreateStoreInstruction extends BaseInstruction<CreateStoreInstructionData> {
-  private static readonly REGEX: RegExp = new RegExp("^CREATE STORE ([a-zA-Z]*) WITH KEY ([a-zA-Z]*)$");
+  private static readonly REGEX: RegExp = new RegExp("^CREATE STORE ([a-zA-Z]+) WITH KEY ([a-zA-Z]+)$");
 
   static override parse(instruction: string): CreateStoreInstruction | null {
     const parsedResults = CreateStoreInstruction.REGEX.exec(instruction);
