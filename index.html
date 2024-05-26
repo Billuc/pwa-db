@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Testing PWA DB</title>
+    <script src="./index.js"></script>
+  </head>
+  <body>
+    <div>
+      PWA-DB is working : 
+      <span id="status" style="border-radius: 0.5em; background: red; padding-inline: 0.5em;">Nope</span>
+    </div> 
+
+    <script defer>
+    getDatabase({
+      dbName: "test",
+      migrations: [{
+        version: 1,
+        name: "CreateStoreTasks",
+        instructions: [
+          "CREATE STORE tasks WITH KEY autoIncrement",
+          "CREATE STORE another WITH KEY id"
+        ]
+      }]
+    }).then(db => {
+      if (!!db._db) {
+        const status = document.getElementById("status");
+        status.style.background = "green";
+        status.innerText = "Yep !";
+      }
+    });
+    </script>
+  </body>
+</html>
