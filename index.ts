@@ -1,7 +1,7 @@
 import Database from "./src/database";
 import type DatabaseConfiguration from "./src/configuration"
 
-async function getDatabase(config: DatabaseConfiguration): Promise<Database> {
+export async function getDatabase(config: DatabaseConfiguration): Promise<Database> {
   if (!window.indexedDB) throw new Error("IndexedDB not found ! The database will not work")
 
   const db = new Database(config);
@@ -9,4 +9,3 @@ async function getDatabase(config: DatabaseConfiguration): Promise<Database> {
   return db;
 }
 
-export default getDatabase;

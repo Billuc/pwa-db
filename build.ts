@@ -5,7 +5,11 @@ const result = await Bun.build({
   target: "browser",
   splitting: false,
   // sourcemap: "external",
-  minify: false,
+  minify: {
+    whitespace: true,
+    syntax: true,
+    identifiers: false,
+  },
 });
 
 if (!result.success) {
@@ -15,7 +19,9 @@ if (!result.success) {
 for (const output of result.outputs) {
   const outputText = await output.text();
   const outputWithoutExport = outputText.slice(0, outputText.indexOf("export"));
-  await Bun.write("./build/index.js", outputWithoutExport);
+  const size = await Bun.write(`./build/${output.path}`, outputWithoutExport);
+
+  console.log(`Wrote file ${output.path} with a size of ${size} bytes`)
 }
 
 console.log("Project built !")
