@@ -9,7 +9,7 @@ export default class Store {
     this._storeName = storeName;
   }
 
-  async get(key: IDBValidKey): any {
+  async get(key: IDBValidKey): Promise<any> {
     const results = await this.openTransaction(this._storeName, "readonly", (t) => new Promise((res, rej) => {
       const store = t.getStore();
       const request = store.get(key);
