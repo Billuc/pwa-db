@@ -1,18 +1,12 @@
-import Database from "./src/database";
-import MessageHandler from "./src/messageHandler";
-import ServerConnection from "./src/serverConnection";
-import type DatabaseConfiguration from "./src/configuration"
+import type DatabaseConfiguration from "./src/configuration";
+import PwaDb from "./src/pwadb";
 
-export async function getDatabase(config: DatabaseConfiguration): Promise<Database> {
+export async function getDatabase(config: DatabaseConfiguration): Promise<PwaDb> {
   if (!window.indexedDB) throw new Error("IndexedDB not found ! The database will not work")
 
-  const db = new Database(config);
-  await db.init();
+  const pwaDb = new PwaDb(config);
+  await pwaDb.init();
 
-  const messageHandler = new MessageHandler(db);
-  const serverConnection = new ServerConnection(config.serverUri, messageHandler);
-  await serverConnection.init();
-
-  return db;
+  return pwaDb;
 }
 

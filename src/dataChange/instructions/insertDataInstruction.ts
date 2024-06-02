@@ -1,4 +1,3 @@
-import type Database from "../../database";
 import BaseInstruction from "./baseInstruction"
 
 interface InsertDataInstructionData {
@@ -20,10 +19,15 @@ export default class InsertDataInstruction extends BaseInstruction<InsertDataIns
     })
   }
 
-  async exec(database: Database): Promise<void> {
-    const store = await database.openStore(this._data.storeName);
+  async exec(db: IDBDatabase): Promise<void> {
+    const transaction = db.transaction(this._data.storeName, "readwrite")
     const data = JSON.parse(this._data.value);
 
+    if (!db.objectStoreNames.contains(this._data.storeName)) {
+      throw new Error(`Store ${this._data.storeName} does not exist`);
+    }
+
+    const store = transaction.objectStore(this._data.storeName);
     store.add(data);
   }
 }

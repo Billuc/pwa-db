@@ -1,12 +1,16 @@
+import type Database from "./database";
+import type MessageService from "./messageService";
 import Transaction from "./transaction";
 
 export default class Store {
-  private _db: IDBDatabase;
+  private _database: Database;
   private _storeName: string;
+  private _messageService: MessageService;
 
-  constructor(db: IDBDatabase, storeName: string) {
-    this._db = db;
+  constructor(database: Database, storeName: string, messageService: MessageService) {
+    this._database = database;
     this._storeName = storeName;
+    this._messageService = messageService;
   }
 
   async get(key: IDBValidKey): Promise<any> {
@@ -102,7 +106,8 @@ export default class Store {
     mode: T,
     fn: (t: Transaction<T>) => Promise<U>
   ): Promise<U> {
-    const transaction = new Transaction<T>(this._db, store, mode);
+    const db = await this._database.getDB();
+    const transaction = new Transaction<T>(db, store, mode);
 
     try {
       return await fn(transaction);

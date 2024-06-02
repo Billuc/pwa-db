@@ -11,5 +11,5 @@ export default abstract class BaseInstruction<T> {
     throw new Error("parse method not implemented");
   }
 
-  abstract exec(database: Database): Promise<void>;
+  abstract exec(db: IDBDatabase): Promise<void>;
 }

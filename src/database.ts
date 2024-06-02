@@ -82,13 +82,7 @@ export default class Database {
     });
   }
 
-  async openStore(storeName: string) {
-    const db = await this.open();
-
-    if (!db.objectStoreNames.contains(storeName)) {
-      throw new Error(`Store ${storeName} does not exist`);
-    }
-
-    return new Store(db, storeName);
+  async getDB(): Promise<IDBDatabase> {
+    return await this.open();
   }
 }

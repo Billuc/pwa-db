@@ -1,24 +1,24 @@
-import MessageHandler from "./messageHandler"
+import type MessageService from "./messageService";
+import Topics from "./topics"
 
 export default class ServerConnection {
   private _serverUrl: string;
-  private _messageHandler: MessageHandler;
+  private _messageService: MessageService;
   private _serverSocket?: WebSocket;
 
-  constructor(serverUrl: string, messageHandler: MessageHandler) {
+  constructor(serverUrl: string, messageService: MessageService) {
     this._serverUrl = serverUrl;
-    this._messageHandler = messageHandler;
+    this._messageService = messageService;
   }
 
   async init(): Promise<void> {
-    return new Promise((res, rej) => {
+    await new Promise<void>((res, rej) => {
       if (!!this._serverSocket) {
         res();
         return;
       }
 
       this._serverSocket = new WebSocket(this._serverUrl);
-      this._serverSocket.onmessage = (messageEvent) => this._messageHandler.handle(messageEvent.data);
 
       if (this._serverSocket.readyState !== WebSocket.CONNECTING) {
         res();
@@ -27,6 +27,12 @@ export default class ServerConnection {
 
       this._serverSocket.onopen = () => res();
     });
+
+    this._serverSocket!.onmessage = async (messageEvent) => {
+      const data = await (messageEvent.data as Blob).text();
+      this._messageService.publish(Topics.INCOMING_DATA, data);
+    }
+    this._messageService.subscribe(Topics.OUTGOING_DATA, this.send);
   }
 
   async send(message: string) {

@@ -1,4 +1,3 @@
-import type Database from "../../database";
 import BaseInstruction from "./baseInstruction"
 
 interface RemoveDataInstructionData {
@@ -20,10 +19,14 @@ export default class RemoveDataInstruction extends BaseInstruction<RemoveDataIns
     })
   }
 
-  async exec(database: Database): Promise<void> {
-    const store = await database.openStore(this._data.storeName);
-    const id = JSON.parse(this._data.id);
+  async exec(db: IDBDatabase): Promise<void> {
+    const transaction = db.transaction(this._data.storeName, "readwrite")
 
-    store.delete(id);
+    if (!db.objectStoreNames.contains(this._data.storeName)) {
+      throw new Error(`Store ${this._data.storeName} does not exist`);
+    }
+
+    const store = transaction.objectStore(this._data.storeName);
+    store.delete(this._data.id);
   }
 }
