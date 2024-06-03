@@ -13,7 +13,7 @@ export default class IncomingMessageHandler {
     this._dataChangeInstructionFactory = new DataChangeInstructionFactory();
     this._messageService = messageService;
 
-    this._messageService.subscribe(Topics.INCOMING_DATA, this.handle);
+    this._messageService.subscribe(Topics.INCOMING_DATA, this.handle.bind(this));
   }
 
   async handle(message: string) {

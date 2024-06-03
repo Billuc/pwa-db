@@ -1,4 +1,4 @@
-import Subscription from "./subscription";
+import type Subscription from "./subscription";
 
 export default class MessageService {
   private _subscriptions: Subscription[];
@@ -21,8 +21,10 @@ export default class MessageService {
     })
     this._nextSubscriptionIndex++;
 
-    if (this._messageStack.get(topic).length > 0) {
-      for (let msg of this._messageStack.get(topic)) {
+    const topicMessages = this._messageStack.get(topic);
+
+    if (!!topicMessages && topicMessages.length > 0) {
+      for (let msg of topicMessages) {
         this.publish(topic, msg);
       }
     }
@@ -44,9 +46,11 @@ export default class MessageService {
     if (topicSubscriptions.length == 0) {
       if (!this._messageStack.has(topic)) this._messageStack.set(topic, []);
 
-      this._messageStack.get(topic).push(message)
+      this._messageStack.get(topic)!.push(message)
       return;
     }
+
+    console.log(message);
 
     const promises = topicSubscriptions.map(async (s) => {
       await s.handler(message);

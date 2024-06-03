@@ -13,6 +13,8 @@
     </div> 
 
     <script defer>
+    let counter = 5000;
+
     getDatabase({
       dbName: "test",
       migrations: [{
@@ -29,12 +31,18 @@
           instructions: [
             "REMOVE STORE tasks",
           ]
-        }]
+        }],
+      serverUri: "ws://localhost:3003/ws"
     }).then(db => {
-      if (!!db._db) {
+      if (!!db._serverConnection) {
         const status = document.getElementById("status");
         status.style.background = "green";
         status.innerText = "Yep !";
+
+          setInterval(() => {
+            db.getStore("another").put({ id: counter });
+            counter++;
+        }, 10000);
       }
     });
     </script>

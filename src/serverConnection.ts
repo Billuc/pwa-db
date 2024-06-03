@@ -12,7 +12,17 @@ export default class ServerConnection {
   }
 
   async init(): Promise<void> {
-    await new Promise<void>((res, rej) => {
+    await this.open();
+
+    this._serverSocket!.onmessage = (messageEvent) => {
+      const data = messageEvent.data;
+      this._messageService.publish(Topics.INCOMING_DATA, data);
+    }
+    this._messageService.subscribe(Topics.OUTGOING_DATA, this.send);
+  }
+
+  open(): Promise<void> {
+    return new Promise<void>((res, rej) => {
       if (!!this._serverSocket) {
         res();
         return;
@@ -27,12 +37,6 @@ export default class ServerConnection {
 
       this._serverSocket.onopen = () => res();
     });
-
-    this._serverSocket!.onmessage = async (messageEvent) => {
-      const data = await (messageEvent.data as Blob).text();
-      this._messageService.publish(Topics.INCOMING_DATA, data);
-    }
-    this._messageService.subscribe(Topics.OUTGOING_DATA, this.send);
   }
 
   async send(message: string) {
