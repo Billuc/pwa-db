@@ -29,4 +29,8 @@ export default class RemoveDataInstruction extends BaseInstruction<RemoveDataIns
     const store = transaction.objectStore(this._data.storeName);
     store.delete(this._data.id);
   }
+
+  static override format(data: RemoveDataInstructionData) {
+    return `REMOVE DATA IN STORE ${data.storeName} WITH ID ${data.id}`
+  }
 }

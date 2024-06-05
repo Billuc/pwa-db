@@ -1,5 +1,8 @@
+import InsertDataInstruction from "./dataChange/instructions/insertDataInstruction";
+import RemoveDataInstruction from "./dataChange/instructions/removeDataInstruction";
 import type Database from "./database";
 import type MessageService from "./messageService";
+import Topics from "./topics";
 import Transaction from "./transaction";
 
 export default class Store {
@@ -67,6 +70,10 @@ export default class Store {
       request.onsuccess = () => res(request.result);
       request.onerror = () => rej(request.error);
     }))
+
+    const data = InsertDataInstruction.format({ storeName: this._storeName, value: value });
+    this._messageService.publish(Topics.OUTGOING_DATA, data);
+
     return results;
   }
 
@@ -78,6 +85,9 @@ export default class Store {
       request.onsuccess = () => res();
       request.onerror = () => rej(request.error);
     }))
+
+    const data = RemoveDataInstruction.format({ storeName: this._storeName, id: key });
+    this._messageService.publish(Topics.OUTGOING_DATA, data);
   }
 
   async deleteAll(range?: IDBKeyRange): Promise<void> {
@@ -114,8 +124,6 @@ export default class Store {
     } catch (e) {
       transaction.rollback();
       throw e;
-    } finally {
-      await transaction.commit();
     }
   }
 }

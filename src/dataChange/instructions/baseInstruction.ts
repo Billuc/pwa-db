@@ -11,5 +11,9 @@ export default abstract class BaseInstruction<T> {
     throw new Error("parse method not implemented");
   }
 
+  static format(data: T): string {
+    throw new Error("format method not implemented");
+  }
+
   abstract exec(db: IDBDatabase): Promise<void>;
 }

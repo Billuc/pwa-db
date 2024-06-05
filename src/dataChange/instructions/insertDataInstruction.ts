@@ -30,4 +30,9 @@ export default class InsertDataInstruction extends BaseInstruction<InsertDataIns
     const store = transaction.objectStore(this._data.storeName);
     store.add(data);
   }
+
+  static override format(data: InsertDataInstructionData) {
+    const stringifiedValue = JSON.stringify(data.value);
+    return `INSERT DATA IN STORE ${data.storeName} WITH VALUE ${stringifiedValue}`
+  }
 }

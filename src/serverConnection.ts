@@ -18,7 +18,7 @@ export default class ServerConnection {
       const data = messageEvent.data;
       this._messageService.publish(Topics.INCOMING_DATA, data);
     }
-    this._messageService.subscribe(Topics.OUTGOING_DATA, this.send);
+    this._messageService.subscribe(Topics.OUTGOING_DATA, this.send.bind(this));
   }
 
   open(): Promise<void> {

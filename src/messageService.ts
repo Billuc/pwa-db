@@ -50,7 +50,7 @@ export default class MessageService {
       return;
     }
 
-    console.log(message);
+    console.debug(message);
 
     const promises = topicSubscriptions.map(async (s) => {
       await s.handler(message);

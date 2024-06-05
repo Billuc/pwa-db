@@ -40,7 +40,7 @@
         status.innerText = "Yep !";
 
           setInterval(() => {
-            db.getStore("another").put({ id: counter });
+            db.getStore("another").add({ id: counter });
             counter++;
         }, 10000);
       }
